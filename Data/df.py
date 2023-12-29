@@ -26,6 +26,7 @@ geo = geo.replace("NRW","Nordrhein-Westfalen",regex=True)
 geo = geo.replace("BERLIN","Berlin",regex=True)
 geo = geo.replace("Berlin-Charlottenburg","Berlin",regex=True)
 geo = geo.replace("Berlin-Mitte","Berlin",regex=True)
+geo = geo.replace("Düsseldorf","Nordrhein-Westfalen",regex=True)
 
 # 3. checking all unique values again to make sure all inconsistencies are fixed
 
@@ -94,6 +95,9 @@ print(besucher)
 kunden_komplett = pd.concat([besucher, kunden], ignore_index=False)
 kunden_komplett = kunden_komplett.sort_values("KundeNr")
 
+#Umformen des Alters für spätere Berechnungen
+kunden_komplett['Alter'] = kunden_komplett['Alter'].astype(str).str.replace('\.0', '').astype(int)
+
 #Zusammenführen aller Kunden und Geodaten anhand der Kundennummer 
 df_final = pd.merge(kunden_komplett, geo, on='KundeNr', how='outer')
 
@@ -103,4 +107,4 @@ df_final = pd.merge(kunden_komplett, geo, on='KundeNr', how='outer')
 df_final.dropna(subset=['Alter'], inplace=True)
 
 #Exportieren der csv Datei für die Berechnungen 
-df_final.to_csv('df_final.csv', index=False)
+df_final.to_csv('df_final.csv', index=True)
