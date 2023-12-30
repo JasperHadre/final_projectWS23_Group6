@@ -71,7 +71,7 @@ print(q10_6)
 
 #Question 11
 plt.figure(figsize=(10, 6))
-data['Zeit'].hist(bins=12, color='skyblue', edgecolor='black')
+data['Zeit'].hist(bins=100, color='skyblue', edgecolor='black')
 plt.title('Verteilung der Zeit')
 plt.xlabel('Zeit')
 plt.ylabel('Anzahl der Einträge')
@@ -100,7 +100,7 @@ model = sm.OLS(y, X)
 results = model.fit()
 
 # Ausgabe der Regressionskoeffizienten
-#print(results.summary())
+print(results.summary())
 
 #Question 15
 intercept = results.params['const']  # Intercept
@@ -121,7 +121,7 @@ print(case2)
 
 data['Kauf_getaetigt'] = data['Preis'].notna().astype(int)
 df_filtered3 = data.dropna()
-print(data)
+
 # Unabhängige Variablen (X): Hier wähle ich 'Einkommen' und 'Zeit' als Beispiele
 X2 = df_filtered3[['Einkommen', 'Zeit','Geschlecht','Alter']]
 
@@ -138,7 +138,7 @@ model2 = sm.Logit(y2, X2)
 results2 = model2.fit()
 
 # Ausgabe der logistischen Regressionskoeffizienten
-#print(results.summary())
+print(results.summary())
 intercept2 = results2.params['const']  # Intercept
 coefficient_einkommen2 = results2.params['Einkommen']  # Koeffizient für 'Einkommen'
 coefficient_alter2 = results2.params['Alter']  # Koeffizient für 'Alter'
