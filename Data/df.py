@@ -11,9 +11,15 @@ geo_txt = pd.read_csv("geo.txt", delimiter= "\s+")
 geo_txt.to_csv("geo.csv", index=False)
 geo = pd.read_csv("geo.csv", index_col=0)
 
+#Converting the , to . in the "kunden" dataframe and changing the type to integer
+kunden = kunden.replace(",",".",regex=True)
+kunden['Einkommen'] = kunden['Einkommen'].astype(float).round().astype(int)
+#print(kunden)
 
-#Converting the , to . in the "besucher" dataframe
+#Converting the , to . in the "besucher" dataframe and changing the type to integer
 besucher = besucher.replace(",",".",regex=True)
+besucher['Einkommen'] = besucher['Einkommen'].astype(float).round().astype(int)
+#print(besucher)
 
 #Cleaning out geo: 
 # 1. checking all unique values to see if there are inconsistencies
