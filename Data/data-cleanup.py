@@ -14,15 +14,16 @@ geo = pd.read_csv("geo.csv", index_col=0)
 #Converting the , to . in the "kunden" dataframe and changing the type to integer
 kunden = kunden.replace(",",".",regex=True)
 kunden['Einkommen'] = kunden['Einkommen'].astype(float).round().astype(int)
-#print(kunden)
+
 
 #Converting the , to . in the "besucher" dataframe and changing the type to integer
 besucher = besucher.replace(",",".",regex=True)
 besucher['Einkommen'] = besucher['Einkommen'].astype(float).round().astype(int)
-#print(besucher)
+
 
 #Cleaning out geo: 
-# 1. checking all unique values to see if there are inconsistencies
+
+# 1. checking all unique values to see if there are inconsistencies using the .unique() function of pandas
     
 print(geo["Niederlassung"].unique())
 
@@ -39,7 +40,8 @@ geo = geo.replace("Düsseldorf","Nordrhein-Westfalen",regex=True)
 print(geo["Niederlassung"].unique())
 
 #Cleaning out kunden:
-    #1. checking wether there are extreme values with  scatter plots:
+
+#1. checking wether there are extreme values with  scatter plots:
 
 plt.scatter(range(len(kunden)),kunden["Alter"])
 plt.show()
@@ -66,8 +68,10 @@ plt.clf()
 kunden = kunden[(kunden["Alter"] < 80 ) & (kunden["Einkommen"] > 0 ) & (kunden["Einkommen"] < 1000000000)]
 
 #Cleaning out besucher
+
 #1. checking wether there are extreme values with  scatter plots:
 
+#Sorting "Besucher" by their KundenNR 
 besucher = besucher.sort_values("KundeNr")
 
 plt.scatter(range(len(besucher)),besucher["Alter"])
@@ -96,17 +100,18 @@ print(kunden)
 print(besucher)
 
 
-#Zusammenführen der Besucher und endgültigen Kunden Anhand der KundenNr
+#Zusammenführen der Besucher und endgültigen Kunden Anhand der KundenNr mit der concat() funktion
+# zusammenführen mti der KundenNr um doppelungen zu vermeiden
 
 kunden_komplett = pd.concat([besucher, kunden], ignore_index=False)
+#Sortieren der endgültigen Datei nach KundenNr, der übersicht halber
 kunden_komplett = kunden_komplett.sort_values("KundeNr")
 
-#Umformen des Alters für spätere Berechnungen
+#Umformen des Alters für spätere Berechnungen (von Str. zu Int)
 kunden_komplett['Alter'] = kunden_komplett['Alter'].astype(str).str.replace('\.0', '').astype(int)
 
 #Zusammenführen aller Kunden und Geodaten anhand der Kundennummer 
 df_final = pd.merge(kunden_komplett, geo, on='KundeNr', how='outer')
-
 
 
 # "Versehentliche" einträge ohne Informationen Löschen 
