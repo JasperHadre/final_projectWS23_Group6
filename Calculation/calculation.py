@@ -53,11 +53,11 @@ print(q8)
 q9 = data.loc[(data['Geschlecht'] == 1.0) & (~data['Preis'].isna()), 'Alter'].mean()
 print(q9)
 
-#Question 9 
+#Question 10 
 q9 = data.dropna(subset=['Preis'])['Einkommen'].mean()
 print(q9)
 
-#Question 10 
+#Question 11
 df_filtered = data.dropna(subset=['Preis'])
 
 q10_1 = pearsonr(df_filtered['Alter'], df_filtered['Preis'])
@@ -69,7 +69,7 @@ q10_6 = pearsonr(df_filtered['Preis'], df_filtered['Zeit'])
 print(q10_6)
 
 
-#Question 11
+#Question 12
 plt.figure(figsize=(10, 6))
 data['Zeit'].hist(bins=100, color='skyblue', edgecolor='black')
 plt.title('Verteilung der Zeit')
@@ -78,11 +78,11 @@ plt.ylabel('Anzahl der Einträge')
 plt.show()
 # seems to be normally distributed 
 
-#Question 12
+#Question 13
 q_12 = (df_filtered['Einkommen'] > df_filtered['Preis']).sum()
 print(q_12)
 
-#Question 13
+#Question 14
 df_filtered2 = data.dropna()
 # Abhängige Variable (y): Preis
 y = df_filtered2['Preis']
