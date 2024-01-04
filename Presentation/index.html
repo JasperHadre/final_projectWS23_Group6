@@ -15231,7 +15231,7 @@ meisten?</font></p>
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell  jp-mod-noInput ">
+</div><div class="fragment"><div class="jp-Cell jp-CodeCell jp-Notebook-cell  jp-mod-noInput ">
 
 <div class="jp-Cell-outputWrapper">
 <div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
@@ -15246,14 +15246,15 @@ meisten?</font></p>
     <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 
 
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr">
-<pre>
-<span class="ansi-red-fg">---------------------------------------------------------------------------</span>
-<span class="ansi-red-fg">AttributeError</span>                            Traceback (most recent call last)
-Cell <span class="ansi-green-fg">In[5], line 1</span>
-<span class="ansi-green-fg">----&gt; 1</span> <span style="color: rgb(0,135,0)">print</span>(<span style="color: rgb(175,0,0)">&#34;</span><span class="ansi-bold" style="color: rgb(175,95,135)">{:,.0f}</span><span style="color: rgb(175,0,0)">&#34;</span><span style="color: rgb(98,98,98)">.</span>format(calculation<span style="color: rgb(98,98,98)">.</span>results3[<span style="color: rgb(175,0,0)">&#39;</span><span style="color: rgb(175,0,0)">x1</span><span style="color: rgb(175,0,0)">&#39;</span>])<span style="color: rgb(98,98,98)">.</span>replace(<span style="color: rgb(175,0,0)">&#34;</span><span style="color: rgb(175,0,0)">,</span><span style="color: rgb(175,0,0)">&#34;</span>,<span style="color: rgb(175,0,0)">&#34;</span><span style="color: rgb(175,0,0)">.</span><span style="color: rgb(175,0,0)">&#34;</span>) )
-
-<span class="ansi-red-fg">AttributeError</span>: module &#39;calculation&#39; has no attribute &#39;results3&#39;</pre>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain">
+<pre> -&gt; Einkommen
+17522.15230204932
+ -&gt; Alter
+5691.303610224638
+ -&gt; Geschlecht
+1000.752843882048
+Das Einkommen beeinflusst den Kaufpreis am meisten!
+</pre>
 </div>
 </div>
 
@@ -15261,18 +15262,6 @@ Cell <span class="ansi-green-fg">In[5], line 1</span>
 
 </div>
 
-</div><div class="fragment">
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<p><font size = "4">Das Alter beeinflusst den Kaufpreis am meisten. Jedoch scheinen alter und Einkommen multicollinear zu einander verteilt zu sein, dem entsprechend keine verlässliche Aussage</font></p>
-
-</div>
-</div>
-</div>
 </div></div></section><section>
 <div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
 <div class="jp-Cell-inputWrapper">
@@ -15293,43 +15282,19 @@ Cell <span class="ansi-green-fg">In[5], line 1</span>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
 <p><font size="3" face="Courier New, monospace"></p>
-<p><span style="font-size: 4; font-weight: bold;"> Question 14</span><br></p>
-<p><span style="color: #0000FF;"># Einträge löschen, die eine NA beinhalten. Diese stören die OLS Funktion und führen zu einem Error; mithilfe von dropna()</span><br>
-<span style="color: #008000;">df_filtered2 = data.dropna()</span><br></p>
-<p><span style="color: #0000FF;"># Abhängige Variable definieren:</span><br>
-<span style="color: #008000;">y = df_filtered2['Preis']</span><br></p>
+<p><span style="font-size: 4; font-weight: bold;"> Question 16</span><br></p>
+<p><span style="color: #0000FF;"># # Abhängige Variable definieren: Preis</span><br>
+<span style="color: #008000;">y3 = calculation.df_filtered2['Preis']</span><br></p>
 <p><span style="color: #0000FF;"># Unabhängige Variablen definieren:</span><br>
-<span style="color: #008000;">X = df_filtered2[['Einkommen', 'Alter', 'Geschlecht']]</span><br></p>
+<span style="color: #008000;">X3 = calculation.df_filtered2[['Einkommen', 'Alter', 'Geschlecht']]</span><br></p>
+<p><span style="color: #0000FF;">#Standardisieren der unabhängigen Variablenn (für standardisierte koeffizienten)</span><br>
+<span style="color: #008000;">X_scaled = scale(X3)</span><br></p>
 <p><span style="color: #0000FF;"># Hinzufügen des Intercept für die Regression</span><br>
-<span style="color: #008000;">X = sm.add_constant(X)</span><br></p>
-<p><span style="color: #0000FF;"># Modell aufrufen (OLS als Rechenweise)</span><br>
-<span style="color: #008000;">model = sm.OLS(y, X)</span><br></p>
+<span style="color: #008000;">X_scaled = sm.add_constant(X_scaled)</span><br></p>
+<p><span style="color: #0000FF;">#Modell aufrufen</span><br>
+<span style="color: #008000;">model3 = sm.OLS(y3, X_scaled)</span><br></p>
 <p><span style="color: #0000FF;"># Modell fitten lassen</span><br>
-<span style="color: #008000;">results = model.fit()</span><br></p>
-<p><span style="color: #0000FF;"># Ausgabe der Regressionsergebnisse</span><br>
-<span style="color: #008000;">print(results.summary())</span></p>
-
-</div>
-</div>
-</div>
-</div></section><section>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<p><font size="3" face="Courier New, monospace"></p>
-<p><span style="color: #008000;">intercept = results.params['const']  <span style="color: #0000FF;"># Intercept aus results aufrufen</span><br>
-coefficient_einkommen = results.params['Einkommen']  <span style="color: #0000FF;"># Koeffizient für 'Einkommen' aus results aufrufen</span><br>
-coefficient_alter = results.params['Alter']  <span style="color: #0000FF;"># Koeffizient für 'Alter' aus results aufrufen</span><br>
-coefficient_geschlecht = results.params['Geschlecht']  <span style="color: #0000FF;"># Koeffizient für 'Geschlecht' aus results aufrufen</span>&lt;/span&gt;<br><br></p>
-<p><span style="color: #0000FF;"># Fall 1: Berechnung der Werte anhand der Koeffizienten:</span><br>
-<span style="color: #008000;">case1 = intercept + (coefficient_einkommen * 30000) + (coefficient_alter * 32) + (coefficient_geschlecht * 1)<br>
-print(case1)</span><br><br></p>
-<p><span style="color: #0000FF;"># Fall 2</span><br>
-<span style="color: #008000;">case2 = intercept + (coefficient_einkommen * 54000) + (coefficient_alter * 51) + (coefficient_geschlecht * 1)<br>
-print(case2)</span></p>
+<span style="color: #008000;">results3 = model3.fit()</span><br></p>
 
 </div>
 </div>
