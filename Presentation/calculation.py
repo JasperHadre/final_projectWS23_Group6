@@ -55,8 +55,8 @@ q9 = data.loc[(data['Geschlecht'] == 1.0) & (~data['Preis'].isna()), 'Alter'].me
 print(q9)
 
 #Question 10 
-q9 = data.dropna(subset=['Preis'])['Einkommen'].mean()
-print(q9)
+q10 = data.dropna(subset=['Preis'])['Einkommen'].mean()
+print(q10)
 
 #Question 11
 df_filtered = data.dropna(subset=['Preis'])
