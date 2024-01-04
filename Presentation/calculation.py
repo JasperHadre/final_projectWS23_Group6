@@ -139,7 +139,7 @@ y3 = df_filtered2['Preis']
 X3 = df_filtered2[['Einkommen', 'Alter', 'Geschlecht']]
 
 # Standardisieren der unabhängigen Variablenn (für standardisierte koeffizienten)
-X_scaled = scale(X)
+X_scaled = scale(X3)
 
 # Hinzufügen einer Konstanten als Intercept in der Regression
 X_scaled = sm.add_constant(X_scaled)
