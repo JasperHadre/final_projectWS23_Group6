@@ -180,7 +180,7 @@ X2 = sm.add_constant(X2)
 y2 = df_filtered3['Kauf_getaetigt']
 
 # Modell aufrufen (logistisch)
-model = sm.Logit(y2, X2)
+model2 = sm.Logit(y2, X2)
 
 # Modell fitten
 results2 = model2.fit()
