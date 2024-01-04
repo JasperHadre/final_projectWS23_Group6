@@ -1,8 +1,9 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
-from scipy.stats import pearsonr
+from scipy.stats import pearsonr, norm
 import statsmodels.api as sm
+from sklearn.preprocessing import scale
 
 
 #import df_final.csv 
@@ -60,27 +61,41 @@ print(q9)
 #Question 11
 df_filtered = data.dropna(subset=['Preis'])
 
-q10_1 = pearsonr(df_filtered['Alter'], df_filtered['Preis'])
-q10_2 = pearsonr(df_filtered['Alter'], df_filtered['Einkommen'])
-q10_3 = pearsonr(df_filtered['Alter'], df_filtered['Zeit'])
-q10_4 = pearsonr(df_filtered['Einkommen'], df_filtered['Zeit'])
-q10_5 = pearsonr(df_filtered['Einkommen'], df_filtered['Preis'])
-q10_6 = pearsonr(df_filtered['Preis'], df_filtered['Zeit'])
-print(q10_6)
+q11_1 = pearsonr(df_filtered['Alter'], df_filtered['Preis'])
+q11_2 = pearsonr(df_filtered['Alter'], df_filtered['Einkommen'])
+q11_3 = pearsonr(df_filtered['Alter'], df_filtered['Zeit'])
+q11_4 = pearsonr(df_filtered['Einkommen'], df_filtered['Zeit'])
+q11_5 = pearsonr(df_filtered['Einkommen'], df_filtered['Preis'])
+q11_6 = pearsonr(df_filtered['Preis'], df_filtered['Zeit'])
+print(q11_6)
 
 
 #Question 12
 plt.figure(figsize=(10, 6))
-data['Zeit'].hist(bins=100, color='skyblue', edgecolor='black')
-plt.title('Verteilung der Zeit')
+counts, bins, _ = plt.hist(data['Zeit'], bins=100, color='skyblue', edgecolor='black', density=True, label='Histogram')
+
+# Berechne Mittelpunkte der Bins
+bin_centers = 0.5 * (bins[:-1] + bins[1:])
+
+# Füge Normalverteilungslinie hinzu (angepasste Amplitude)
+mean, std = data['Zeit'].mean(), data['Zeit'].std()
+p = norm.pdf(bin_centers, mean, std) * (np.max(counts) / np.max(norm.pdf(bin_centers, mean, std)))  # Amplitude anpassen
+plt.plot(bin_centers, p, 'k', linewidth=2, label='Normalverteilung')
+
+# Beschriftungen und Titel
+plt.title('Histogramm und Normalverteilung der Zeit')
 plt.xlabel('Zeit')
-plt.ylabel('Anzahl der Einträge')
+plt.ylabel('Dichte')
+plt.legend()
+
+# Zeige das Diagramm
 plt.show()
+
 # seems to be normally distributed 
 
 #Question 13
-q_12 = (df_filtered['Einkommen'] > df_filtered['Preis']).sum()
-print(q_12)
+q_13 = (df_filtered['Einkommen'] > df_filtered['Preis']).sum()
+print(q_13)
 
 #Question 14
 df_filtered2 = data.dropna()
@@ -117,28 +132,63 @@ print(case2)
 #Question 16 
 # Das Alter beeinflusst den Kaufpreis am meiste. Jedoch scheinen alter und Einkommen multicollinear zu einander verteilt zu sein, dem entsprechend keine verlässliche Aussage
 
-#Question 17 
+# Abhängige Variable definieren: Preis
+y3 = df_filtered2['Preis']
 
+# Unabhängige Variablen definieren:
+X3 = df_filtered2[['Einkommen', 'Alter', 'Geschlecht']]
+
+# Standardisieren der unabhängigen Variablenn (für standardisierte koeffizienten)
+X_scaled = scale(X)
+
+# Hinzufügen einer Konstanten als Intercept in der Regression
+X_scaled = sm.add_constant(X_scaled)
+
+# Modell aufrufen
+model3 = sm.OLS(y3, X_scaled)
+
+# Modell ausrechnen
+results3 = model3.fit()
+
+# Ausgabe der standardisierten Regressionskoeffizienten
+#Für einkommen:
+print(results3.params['x1'])
+#Für Alter:
+print(results3.params['x2'])
+#Für Geschlecht
+print(results3.params['x3'])
+print("Das Einkommen beeinflusst den Kaufpreis am meisten!")
+
+
+#Question 17 
+#Hinzufügen einer weiteren Spalte, 'Kauf getätigt' als Dummy Variable. Diese ist 1 wenn ein Auto gekauft wurde und 0 wenn nicht. 
 data['Kauf_getaetigt'] = data['Preis'].notna().astype(int)
+
+#Ersetzen der NA Einträge in der Spalte Preis mit Null, da sonst alle Besucher im nächsten Schritt gelöscht werden
+data['Preis'] = data['Preis'].fillna(0)
+
+#Löschen aller einträge, die NA enthalten, da diese die Funktion sm.logit() stören und einen error hervorrufen
 df_filtered3 = data.dropna()
 
-# Unabhängige Variablen (X): Hier wähle ich 'Einkommen' und 'Zeit' als Beispiele
+# Unabhängige Variablen (X) definieren
 X2 = df_filtered3[['Einkommen', 'Zeit','Geschlecht','Alter']]
 
 # Hinzufügen einer Konstanten für den Intercept in der Regression
 X2 = sm.add_constant(X2)
 
-# Abhängige Variable (y): Kauf getätigt (binär)
+# Abhängige Variable definieren (binär)
 y2 = df_filtered3['Kauf_getaetigt']
 
-# Modell erstellen
-model2 = sm.Logit(y2, X2)
+# Modell aufrufen (logistisch)
+model = sm.Logit(y2, X2)
 
-# Modell anpassen
+# Modell fitten
 results2 = model2.fit()
 
 # Ausgabe der logistischen Regressionskoeffizienten
-print(results.summary())
+print(results2.summary())
+
+
 intercept2 = results2.params['const']  # Intercept
 coefficient_einkommen2 = results2.params['Einkommen']  # Koeffizient für 'Einkommen'
 coefficient_alter2 = results2.params['Alter']  # Koeffizient für 'Alter'
